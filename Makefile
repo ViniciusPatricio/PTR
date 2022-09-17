@@ -17,8 +17,7 @@ CC=gcc
 CFLAGS=-Wall -O3 -I $(incdir)
 CPPFLAGS=
 LDFLAGS=-L $(libdir)
-LDLIBS=-ggdb
-#LDLIBS=-lm -lpthread -lstdc++
+LDLIBS=-ggdb -lm -lpthread -lstdc++
 
 all: $(PRJ)
 
@@ -34,7 +33,7 @@ showvars:
 	@echo LIBS: $(LDLIBS)
 
 $(PRJ): $(srcdir)/main.c $(objects) $(includes)
-	$(CC) $(CFLAGS) $(CPPFLAGS) -o $(PRJ) $(srcdir)/main.c $(includes) $(objects) $(LDFLAGS) $(LDLIBS)
+	$(CC) $(CFLAGS) $(CPPFLAGS) -o $(PRJ) $(srcdir)/main.c $(objects) $(LDFLAGS) $(LDLIBS)
 
 $(objdir)/%.o: $(srcdir)/%.c
 	$(CC) -c $(CFLAGS) $(CPPFLAGS) -o $@ $<
