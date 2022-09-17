@@ -5,7 +5,7 @@
 #include "ref.h"
 #include "math.h"
 #define delta 0.0001
-
+#include "linear.h"
 
 
 int main() {
