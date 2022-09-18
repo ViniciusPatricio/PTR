@@ -30,18 +30,20 @@ void *ref_thread(void *){
     double t = 0;       //tempo calculado
     double tm = 0;      //tempo medido
     double T = 50;      //milissegundos
+
     struct timespec ts1, ts2, ts3={0};
 
+    Matrix ref;
 
-
-    while(t <= 13000) {
+    while(t <= 14000) {
 
         clock_gettime(CLOCK_REALTIME, &ts1);
         tm = 1000000 * ts1.tv_nsec - tm;
         t = t + T;
-        Matrix ref;
+
         ref = calculate_reference(t/1000);
-        //matrix_print(ref);
+        mutexes_setRef(ref);
+        //printf("%f,%f\n",ref.values[0],ref.values[1]);
 
         clock_gettime(CLOCK_REALTIME, &ts2);
         ts3.tv_sec = 0;
@@ -49,4 +51,5 @@ void *ref_thread(void *){
 
         nanosleep(&ts3, &ts3);
     }
+
 }

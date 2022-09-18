@@ -44,4 +44,4 @@ clean:
 	@rm -rf $(PRJ) $(objdir)/*.o $(srcdir)/*~
 
 run:
-	@./$(PRJ) "$(ARGS)"
+	@./$(PRJ) "$(ARGS)" > dados.txt
