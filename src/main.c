@@ -1,15 +1,19 @@
 #include <stdio.h>
 #include <time.h>
-#include <stdlib.h>
-#include "Integral.h"
-#include "ref.h"
-#include "math.h"
-#define delta 0.0001
-#include "linear.h"
-
+#include <ref.h>
+#include <ref_model.h>
+#include <linear.h>
+#include <mutexes.h>
+#include <pthread.h>
 
 int main() {
-    Matrix test = calculate_reference(2);
-    matrix_print(test);
+    mutexes_init();
+    pthread_t TRef, TRef_model;
+
+    pthread_create(&TRef, NULL, ref_thread(NULL),NULL);
+    pthread_create(&TRef_model,NULL,refModel_thread(NULL),NULL);
+
+    //pthread_join(TRef, NULL);
+    //pthread_join(TRef_model, NULL);
     return 0;
 }
