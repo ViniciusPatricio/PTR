@@ -2,7 +2,6 @@
 // Created by vinicius on 17/09/22.
 //
 #include <Matrix.h>
-#include "stdio.h"
 #include <control.h>
 #include "time.h"
 #include "mutexes.h"
@@ -37,8 +36,7 @@ void *control_thread(void *){
 
         V = calculate_atrix_Vt(Ym_dot,Ym,Y);
         mutexes_setV(V);
-        //printf("%f,%f\n",V.values[0],V.values[1]);
-        //matrix_print(V);
+
 
         clock_gettime(CLOCK_REALTIME, &ts2);
         ts3.tv_sec = 0;

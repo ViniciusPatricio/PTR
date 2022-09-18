@@ -1,8 +1,12 @@
 //
 // Created by vinicius on 17/09/22.
 //
+#include "stdio.h"
+#include "Matrix.h"
+#include "time.h"
 #include <robot.h>
 #include "math.h"
+#include "mutexes.h"
 
 Matrix calculate_X_dot(Matrix Xt, Matrix Ut){
     Matrix aux = matrix_constructor(3,2);
@@ -22,10 +26,53 @@ Matrix calculate_Xt(Matrix Xt_dot, Matrix Xt_dot_old, double delta){
 
 Matrix calculate_Yt(Matrix Xt, double R){
     Matrix identity = matrix_identify(2,3);
-    Matrix result_aux = matrix_mult(Xt,identity);
+    Matrix aux_result =  matrix_mult(identity,Xt);
     Matrix Yt = matrix_constructor(2,1);
-    Yt.values[0] = (result_aux.values[0]+R*cos(Xt.values[2]));
-    Yt.values[1] = (result_aux.values[1]+R*sin(Xt.values[2]));
+    Yt.values[0] = (aux_result.values[0]+R*cos(Xt.values[2]));
+    Yt.values[1] = (aux_result.values[1]+R*sin(Xt.values[2]));
 
     return Yt;
+}
+
+void *robot_thread(void *){
+    double t = 0;       //tempo calculado
+    double tm = 0;      //tempo medido
+    double T = 10;      //milissegundos
+    double Raio = 0.3;
+    struct timespec ts1, ts2, ts3={0};
+
+    Matrix X_dot_old, Ut, X_dot, X, X_old, Y;
+
+    while(t <= 13000) {
+
+        clock_gettime(CLOCK_REALTIME, &ts1);
+        tm = 1000000 * ts1.tv_nsec - tm;
+        t = t + T;
+
+        mutexes_getX_dot(&X_dot_old);
+        mutexes_getX(&X_old);
+        mutexes_getU(&Ut);
+
+        X_dot = calculate_X_dot(X_old,Ut);
+
+
+        X = calculate_Xt(X_dot,X_dot_old,0.03);
+
+        Y = calculate_Yt(X,Raio);
+
+        mutexes_setX_dot(X_dot);
+        mutexes_setX(X);
+        mutexes_setY(Y);
+
+        printf("%f,%f\n",Y.values[0],Y.values[1]);
+        //matrix_print(X);
+        //matrix_print(Y);
+
+        clock_gettime(CLOCK_REALTIME, &ts2);
+        ts3.tv_sec = 0;
+        ts3.tv_nsec = T*1000000 - (ts2.tv_nsec - ts1.tv_nsec);
+
+        nanosleep(&ts3, &ts3);
+    }
+
 }

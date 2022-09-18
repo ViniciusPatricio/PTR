@@ -31,6 +31,12 @@ void *linear_thread( void *){
         clock_gettime(CLOCK_REALTIME, &ts1);
         tm = 1000000 * ts1.tv_nsec - tm;
         t = t + T;
+        mutexes_getX(&X);
+        mutexes_getV(&V);
+
+        U = calculate_Ut(X,V,Raio);
+        mutexes_setU(U);
+        //printf("%f,%f\n",U.values[0],U.values[1]);
 
         clock_gettime(CLOCK_REALTIME, &ts2);
         ts3.tv_sec = 0;
