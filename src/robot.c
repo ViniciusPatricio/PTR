@@ -12,6 +12,15 @@
 #define N_ROBOT 14000/10
 
 double jitters_Robot[N_ROBOT];
+double latency_Robot[N_ROBOT];
+
+double *getJitter_Robot(){
+    return jitters_Robot;
+}
+
+double *getLatency_Robot(){
+    return latency_Robot;
+}
 
 Matrix calculate_X_dot(Matrix Xt, Matrix                                                                                                                                                                                                                                                                                                                                                                                                                                                               Ut){
     Matrix aux = matrix_constructor(3,2);
@@ -46,17 +55,23 @@ void *robot_thread(void *){
     double Raio = 0.3;
     struct timespec ts1, ts2, ts3={0};
     double jitter = 0;
+    double dif_time = 0;
     int indice = 0;
     Matrix X_dot_old, Ut, X_dot, X, X_old, Y;
 
     while(t <= 14000) {
 
         clock_gettime(CLOCK_REALTIME, &ts1);
+        dif_time = calculate_latence(ts1.tv_nsec,tm);
         jitter = calculate_jitter(ts1.tv_nsec,tm,T);
         jitters_Robot[indice] = jitter;
+        latency_Robot[indice] = dif_time;
+
+
         tm = (double) ts1.tv_nsec/1000000;
         t = t + T;
         indice++;
+
 
         mutexes_getX_dot(&X_dot_old);
         mutexes_getX(&X_old);

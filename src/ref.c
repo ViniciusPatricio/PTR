@@ -11,6 +11,14 @@
 double jitter_ref[N_REF];
 double latency_ref[N_REF];
 
+double *getJitter_ref(){
+    return jitter_ref;
+}
+
+double *getLatency_ref(){
+    return latency_ref;
+}
+
 Matrix calculate_reference(double t){
     Matrix matrix_ref;
 
@@ -40,15 +48,20 @@ void *ref_thread(void *){
     int indice = 0;
     struct timespec ts1, ts2, ts3={0};
     Matrix ref;
-
+    double t_aux = 0;
     while(t <= 14000) {
+
 
         clock_gettime(CLOCK_REALTIME, &ts1);
         jitter = calculate_jitter(ts1.tv_nsec,tm,T);
-        dif_time = calculate_latencey(ts1.tv_nsec,tm);
+        dif_time = calculate_latence(ts1.tv_nsec,tm);
+        if(t != 0){
+            t_aux += dif_time;
+        }
 
         jitter_ref[indice] = jitter;
         latency_ref[indice] =dif_time;
+
 
 
         tm = (double) ts1.tv_nsec/1000000;
@@ -57,7 +70,7 @@ void *ref_thread(void *){
         t = t + T;
         indice++;
 
-        ref = calculate_reference(t/1000);
+        ref = calculate_reference(t_aux/1000);
         mutexes_setRef(ref);
 
         clock_gettime(CLOCK_REALTIME, &ts2);

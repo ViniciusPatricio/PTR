@@ -13,6 +13,15 @@
 double jitter_Refmodel[N_REFMODEL];
 double latency_Refmodel[N_REFMODEL];
 
+double *getJitter_Refmodel(){
+    return jitter_Refmodel;
+}
+
+double *getLatency_Refmodel(){
+    return latency_Refmodel;
+}
+
+
 Matrix calculate_YM_dot(Matrix ref, Matrix YM){
     Matrix YM_dot =  matrix_constructor(2,1);
     YM_dot.values[0] = Alpha1*(ref.values[0] - YM.values[0]);
@@ -42,13 +51,12 @@ void *refModel_thread(void *){
     while(t <= 14000) {
 
         clock_gettime(CLOCK_REALTIME, &ts1);
-        dif_time = calculate_latencey(ts1.tv_nsec,tm);
+        dif_time = calculate_latence(ts1.tv_nsec,tm);
         jitter = calculate_jitter(ts1.tv_nsec,tm,T);
         jitter_Refmodel[indice] = jitter;
         latency_Refmodel[indice] = dif_time;
 
         tm = (double) ts1.tv_nsec/1000000;
-
         t = t + T;
         indice++;
 

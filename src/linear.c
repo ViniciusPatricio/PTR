@@ -13,6 +13,15 @@
 #define N_LINEAR 14000/20
 
 double jitter_Linear[N_LINEAR];
+double latency_Linear[N_LINEAR];
+
+double *getJitter_Linear(){
+    return jitter_Linear;
+}
+
+double *getLatency_Linear(){
+    return latency_Linear;
+}
 
 Matrix calculate_Ut(Matrix Xt, Matrix Vt, double R){
     Matrix L = matrix_constructor(2,2);
@@ -29,6 +38,7 @@ void *linear_thread( void *){
     double T = 20;      //milissegundos
     struct timespec ts1, ts2, ts3={0};
     double Raio = 0.3;
+    double dif_time = 0;
     double jitter = 0;
     int indice = 0;
     Matrix X, V, U;
@@ -36,10 +46,11 @@ void *linear_thread( void *){
     while(t <= 14000) {
 
         clock_gettime(CLOCK_REALTIME, &ts1);
+        dif_time = calculate_latence(ts1.tv_nsec,tm);
         jitter = calculate_jitter(ts1.tv_nsec,tm,T);
         jitter_Linear[indice] = jitter;
+        latency_Linear[indice] = dif_time;
         tm = (double) ts1.tv_nsec/1000000;
-
         t = t + T;
         indice++;
 

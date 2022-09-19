@@ -7,7 +7,7 @@
 #include <linear.h>
 #include <mutexes.h>
 #include <pthread.h>
-
+#include "evaluate_model.h"
 
 
 void *print_thread( void *){
@@ -53,6 +53,7 @@ void *print_thread( void *){
 
 
 
+
 int main() {
     mutexes_init();
     pthread_t TRef, TRef_model, TControl, TLinear,TRobot,TPrint;
@@ -62,14 +63,15 @@ int main() {
     pthread_create(&TControl, NULL,control_thread,NULL);
     pthread_create(&TLinear, NULL,linear_thread,NULL);
     pthread_create(&TRobot, NULL,robot_thread,NULL);
-    //pthread_create(&TPrint,NULL,print_thread,NULL);
+    pthread_create(&TPrint,NULL,print_thread,NULL);
 
     pthread_join(TRef, NULL);
     pthread_join(TRef_model, NULL);
     pthread_join(TControl, NULL);
     pthread_join(TLinear, NULL);
     pthread_join(TRobot, NULL);
-    //pthread_join(TPrint,NULL);
+    pthread_join(TPrint,NULL);
 
+    evaluate();
     return 0;
 }
