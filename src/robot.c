@@ -64,10 +64,6 @@ void *robot_thread(void *){
         mutexes_setX(X);
         mutexes_setY(Y);
 
-        //
-        //printf("%f,%f\n",Y.values[0],Y.values[1]);
-        //matrix_print(X);
-        //matrix_print(Y);
 
         clock_gettime(CLOCK_REALTIME, &ts2);
         ts3.tv_sec = 0;
