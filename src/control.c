@@ -12,18 +12,9 @@
 #define N_Control 14000/30
 
 double jitter_Control[N_Control];
-double latency_Control[N_Control];
 
 #define Alpha1 3
 #define Alpha2 3
-
-double *getJitter_Control(){
-    return jitter_Control;
-}
-
-double *getLatency_Control(){
-    return latency_Control;
-}
 
 
 Matrix calculate_atrix_Vt(Matrix YM_dot, Matrix YM, Matrix YT){
@@ -40,17 +31,13 @@ void *control_thread(void *){
     struct timespec ts1, ts2, ts3={0};
     double jitter = 0;
     int indice = 0;
-    double dif_time = 0;
     Matrix V,Ym_dot,Ym,Y;
 
     while(t <= 14000) {
         clock_gettime(CLOCK_REALTIME, &ts1);
-        dif_time = calculate_latence(ts1.tv_nsec,tm);
+
         jitter = calculate_jitter(ts1.tv_nsec,tm,T);
         jitter_Control[indice] = jitter;
-        latency_Control[indice] = dif_time;
-
-
         tm = (double) ts1.tv_nsec/1000000;
         t = t + T;
         indice++;
