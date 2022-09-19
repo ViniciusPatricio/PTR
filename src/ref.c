@@ -62,4 +62,5 @@ void *ref_thread(void *){
 
         nanosleep(&ts3, &ts3);
     }
+    printf("Mean %f", mean_jitter(jitter_ref,T));
 }
