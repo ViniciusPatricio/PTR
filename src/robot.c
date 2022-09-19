@@ -7,8 +7,13 @@
 #include <robot.h>
 #include "math.h"
 #include "mutexes.h"
+#include "jitters.h"
 
-Matrix calculate_X_dot(Matrix Xt, Matrix Ut){
+#define N_ROBOT 14000/10
+
+double jitters_Robot[N_ROBOT];
+
+Matrix calculate_X_dot(Matrix Xt, Matrix                                                                                                                                                                                                                                                                                                                                                                                                                                                               Ut){
     Matrix aux = matrix_constructor(3,2);
     aux.values[0] = cos(Xt.values[2]); aux.values[1] = 0;
     aux.values[2] = sin(Xt.values[2]); aux.values[3] = 0;
@@ -40,14 +45,18 @@ void *robot_thread(void *){
     double T = 10;      //milissegundos
     double Raio = 0.3;
     struct timespec ts1, ts2, ts3={0};
-
+    double jitter = 0;
+    int indice = 0;
     Matrix X_dot_old, Ut, X_dot, X, X_old, Y;
 
     while(t <= 14000) {
 
         clock_gettime(CLOCK_REALTIME, &ts1);
-        tm = 1000000 * ts1.tv_nsec - tm;
+        jitter = calculate_jitter(ts1.tv_nsec,tm,T);
+        jitters_Robot[indice] = jitter;
+        tm = (double) ts1.tv_nsec/1000000;
         t = t + T;
+        indice++;
 
         mutexes_getX_dot(&X_dot_old);
         mutexes_getX(&X_old);
