@@ -32,7 +32,7 @@ void *refModel_thread(void *){
 
     Matrix ref, Ym_old, Ym_dot_old, Ym, Ym_dot;
 
-    while(t <= 13000) {
+    while(t <= 14000) {
 
         clock_gettime(CLOCK_REALTIME, &ts1);
         tm = 1000000 * ts1.tv_nsec - tm;

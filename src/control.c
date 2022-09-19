@@ -25,7 +25,7 @@ void *control_thread(void *){
 
     Matrix V,Ym_dot,Ym,Y;
 
-    while(t <= 13000) {
+    while(t <= 14000) {
         clock_gettime(CLOCK_REALTIME, &ts1);
         tm = 1000000 * ts1.tv_nsec - tm;
         t = t + T;

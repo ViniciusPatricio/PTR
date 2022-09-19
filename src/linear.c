@@ -26,7 +26,7 @@ void *linear_thread( void *){
 
     Matrix X, V, U;
 
-    while(t <= 13000) {
+    while(t <= 14000) {
 
         clock_gettime(CLOCK_REALTIME, &ts1);
         tm = 1000000 * ts1.tv_nsec - tm;
