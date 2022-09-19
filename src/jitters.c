@@ -29,7 +29,7 @@ double mean_jitter(double jitter[], double T){
 double max_min_jitter(double jitter[],double T, int op){
     double min = jitter[1];
     double max = jitter[1];
-    for(int i = 1; i < 14000/T; i++){
+    for(int i = 1; i < (14000/T); i++){
         if(min > jitter[i]){
             min = jitter[i];
         }
@@ -51,5 +51,10 @@ double var_dp_jitter(double jitter[],double T, int op){
     for(int i = 1; i < 14000/T;i++){
         var += pow((jitter[i]-mean),2);
     }
-
+    var = var/(14000/T);
+    if(op == 0){
+        return var;
+    }else{
+        return sqrt(var);
+    }
 }

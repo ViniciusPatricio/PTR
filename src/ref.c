@@ -62,5 +62,6 @@ void *ref_thread(void *){
 
         nanosleep(&ts3, &ts3);
     }
-    printf("Mean %f", mean_jitter(jitter_ref,T));
+    printf("Mean %f Var: %f Dp: %f  Max: %f Min: %f\n", mean_jitter(jitter_ref,T), var_dp_jitter(jitter_ref,T,0),
+           var_dp_jitter(jitter_ref,T,1), max_min_jitter(jitter_ref,T,1), max_min_jitter(jitter_ref,T,0));
 }
