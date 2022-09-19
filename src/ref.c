@@ -9,6 +9,7 @@
 #define N_REF 14000/50
 
 double jitter_ref[N_REF];
+double latency_ref[N_REF];
 
 Matrix calculate_reference(double t){
     Matrix matrix_ref;
@@ -43,13 +44,16 @@ void *ref_thread(void *){
     while(t <= 14000) {
 
         clock_gettime(CLOCK_REALTIME, &ts1);
-
-        dif_time = calculate_latencey(ts1.tv_nsec,tm);
         jitter = calculate_jitter(ts1.tv_nsec,tm,T);
+        dif_time = calculate_latencey(ts1.tv_nsec,tm);
+
         jitter_ref[indice] = jitter;
+        latency_ref[indice] =dif_time;
+
+
         tm = (double) ts1.tv_nsec/1000000;
 
-        printf("indice: %d dif_time: %f jitter: %f  armazenando jitter: %f\n",indice,dif_time,jitter,jitter_ref[indice]);
+
         t = t + T;
         indice++;
 
@@ -62,6 +66,4 @@ void *ref_thread(void *){
 
         nanosleep(&ts3, &ts3);
     }
-    printf("Mean %f Var: %f Dp: %f  Max: %f Min: %f\n", mean_jitter(jitter_ref,T), var_dp_jitter(jitter_ref,T,0),
-           var_dp_jitter(jitter_ref,T,1), max_min_jitter(jitter_ref,T,1), max_min_jitter(jitter_ref,T,0));
 }

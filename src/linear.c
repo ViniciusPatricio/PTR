@@ -6,7 +6,13 @@
 #include "stdio.h"
 #include "time.h"
 #include "mutexes.h"
+#include "jitters.h"
 #include <linear.h>
+
+
+#define N_LINEAR 14000/20
+
+double jitter_Linear[N_LINEAR];
 
 Matrix calculate_Ut(Matrix Xt, Matrix Vt, double R){
     Matrix L = matrix_constructor(2,2);
@@ -23,20 +29,26 @@ void *linear_thread( void *){
     double T = 20;      //milissegundos
     struct timespec ts1, ts2, ts3={0};
     double Raio = 0.3;
-
+    double jitter = 0;
+    int indice = 0;
     Matrix X, V, U;
 
     while(t <= 14000) {
 
         clock_gettime(CLOCK_REALTIME, &ts1);
-        tm = 1000000 * ts1.tv_nsec - tm;
+        jitter = calculate_jitter(ts1.tv_nsec,tm,T);
+        jitter_Linear[indice] = jitter;
+        tm = (double) ts1.tv_nsec/1000000;
+
         t = t + T;
+        indice++;
+
         mutexes_getX(&X);
         mutexes_getV(&V);
 
         U = calculate_Ut(X,V,Raio);
         mutexes_setU(U);
-        //printf("%f,%f\n",U.values[0],U.values[1]);
+
 
         clock_gettime(CLOCK_REALTIME, &ts2);
         ts3.tv_sec = 0;
@@ -44,4 +56,5 @@ void *linear_thread( void *){
 
         nanosleep(&ts3, &ts3);
     }
+
 }
