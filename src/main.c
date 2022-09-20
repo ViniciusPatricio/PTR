@@ -71,7 +71,7 @@ int main() {
     pthread_join(TLinear, NULL);
     pthread_join(TRobot, NULL);
     pthread_join(TPrint,NULL);
-
+    mutexes_destoy();
     evaluate();
     return 0;
 }
