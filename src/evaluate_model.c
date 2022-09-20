@@ -12,10 +12,11 @@
 
 double mean(double jitter[], double T){
     double sum = 0;
-    for(int i = 1; i < 14000/T;i++){
+    for(int i = 1 ; i < 14000/T; i++){
         sum += jitter[i];
     }
-    return sum/(14000/T);
+
+    return sum/((14000/T)-1);
 }
 
 double max_min(double jitter[],double T, int op){
@@ -43,7 +44,7 @@ double var_dp(double jitter[],double T, int op){
     for(int i = 1; i < 14000/T;i++){
         var += pow((jitter[i]-mean_calculate),2);
     }
-    var = var/(14000/T);
+    var = var/((14000/T)-1);
     if(op == 0){
         return var;
     }else{
@@ -88,4 +89,5 @@ void evaluate(){
 
 
     fclose(file);
+
 }
